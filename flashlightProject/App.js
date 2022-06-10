@@ -1,10 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import Torch from 'react-native-torch';
+import RNShake from 'react-native-shake';
 
 const App = () => {
 
   const [toogle, setToogle] = useState(true);
+
   const handleChangeToogle = () => setToogle(oldToogle => !oldToogle);
+
+  useEffect( ()=> {
+    //on cell phone flash
+    Torch.switchState(toogle);
+  },[toogle]);
+
+  useEffect(() => {
+    const subscription = RNShake.addListener(() => {
+      setToogle(oldToogle => !oldToogle);
+    });
+    return () => subscription.remove();
+  })
 
   return <View style={toogle ? style.containerLight : style.container}>
     <TouchableOpacity onPress={ handleChangeToogle }>
